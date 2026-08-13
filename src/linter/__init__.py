@@ -1,0 +1,1 @@
+"""SpecBuddy core linter package."""

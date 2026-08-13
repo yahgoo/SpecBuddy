@@ -1,0 +1,90 @@
+[
+  {
+    "id": "SG01",
+    "title": "PayNow QR expiry with vague timeout",
+    "requirement_text": "The system should handle PayNow QR code expiry appropriately when the timeout occurs.",
+    "expected_flags": "vague adjective (appropriately);escape clause (appropriately);missing EARS trigger keyword",
+    "difficulty": "medium",
+    "category": "paynow"
+  },
+  {
+    "id": "SG02",
+    "title": "PayNow retry semantics undefined",
+    "requirement_text": "If PayNow payment fails, the system should retry the transaction quickly.",
+    "expected_flags": "vague adjective (quickly);no measurable threshold",
+    "difficulty": "medium",
+    "category": "paynow"
+  },
+  {
+    "id": "SG03",
+    "title": "PayNow refund path with passive voice and no actor",
+    "requirement_text": "Refunds are processed after PayNow transaction failures are detected.",
+    "expected_flags": "passive voice (are processed);passive voice (are detected);missing explicit actor",
+    "difficulty": "hard",
+    "category": "paynow"
+  },
+  {
+    "id": "SG04",
+    "title": "PayNow failure handling with oblique and vague verb",
+    "requirement_text": "The system shall notify and/or alert merchants when PayNow transfers fail or timeout.",
+    "expected_flags": "oblique symbol (and/or);EARS singularity violation",
+    "difficulty": "hard",
+    "category": "paynow"
+  },
+  {
+    "id": "SG05",
+    "title": "PDPA consent with escape clause",
+    "requirement_text": "The system shall obtain appropriate consent before collecting personal data where applicable.",
+    "expected_flags": "escape clause (appropriate);escape clause (where applicable)",
+    "difficulty": "medium",
+    "category": "pdpa"
+  },
+  {
+    "id": "SG06",
+    "title": "PDPA data retention with vague period",
+    "requirement_text": "Personal data should be retained for a reasonable period and then deleted securely.",
+    "expected_flags": "vague adjective (reasonable);no measurable threshold;missing EARS trigger keyword",
+    "difficulty": "medium",
+    "category": "pdpa"
+  },
+  {
+    "id": "SG07",
+    "title": "PDPA anonymisation threshold undefined",
+    "requirement_text": "Data should be anonymised properly before sharing with third parties.",
+    "expected_flags": "vague adjective (properly);no measurable threshold;missing EARS trigger keyword",
+    "difficulty": "medium",
+    "category": "pdpa"
+  },
+  {
+    "id": "SG08",
+    "title": "PDPA accountability gap in passive wording",
+    "requirement_text": "Personal data breaches are reported to the relevant authorities in a timely manner.",
+    "expected_flags": "passive voice (are reported);escape clause (timely manner);missing explicit actor",
+    "difficulty": "hard",
+    "category": "pdpa"
+  },
+  {
+    "id": "SG09",
+    "title": "Multilingual hawker notice — 付款成功 confirmation",
+    "requirement_text": "The system shall display 付款成功 payment confirmation messages clearly to hawker merchants.",
+    "expected_flags": "vague adjective (clearly);no measurable threshold",
+    "difficulty": "medium",
+    "category": "multilingual"
+  },
+  {
+    "id": "SG10",
+    "title": "Multilingual heartland notice — pembayaran berjaya notification",
+    "requirement_text": "Notifikasi pembayaran berjaya should be shown promptly to kampung store owners.",
+    "expected_flags": "vague adjective (promptly);no measurable threshold;missing EARS trigger keyword",
+    "difficulty": "medium",
+    "category": "multilingual"
+  },
+  {
+    "id": "SG11",
+    "title": "Well-formed PayNow EARS requirement (control)",
+    "requirement_text": "WHEN a PayNow QR code expires after 180 seconds, THE System SHALL display an expiry error message to the merchant within 2 seconds.\nIF the merchant dismisses the error, THEN THE System SHALL reset the QR code scanner to accept a new payment within 1 second.",
+    "expected_flags": "none expected; valid EARS pattern; single SHALL; clear trigger/response",
+    "difficulty": "control",
+    "category": "paynow"
+  }
+]

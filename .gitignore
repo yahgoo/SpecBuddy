@@ -1,0 +1,52 @@
+# macOS
+.DS_Store
+
+# Editor / OS artifacts
+*.swp
+*~
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+**pycache**/
+*.py[cod]
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+frontend/dist/
+build/
+*.log
+
+# Local env
+.env
+.env.*
+.venv-daytona/
+
+# SpecBuddy runtime
+*.db
+*.sqlite
+*.sqlite3
+claritygate-report.md
+specbuddy-report.md
+
+# Generated evaluation artifacts
+output/
+tmp/
+
+# Local indexes and tooling state
+.codegraph/
+
+# Legacy artifacts not part of SpecBuddy submission
+*.key
+*.pptx
+QODER_GPT55_HANDOFF.md
+codexPromptQoder.md
+SESSION_SAVE.md

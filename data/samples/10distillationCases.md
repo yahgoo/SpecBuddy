@@ -1,0 +1,16 @@
+Option 1: here are the 10 canonical distillation test cases. Save these to a new file `data/samples/distillation-test-cases.json` in the repo (do not modify grill-mode-final-prompt-pack.md, SKILL.md, or the zip) so this stops being a recurring blocker.
+
+[
+  {"id": "TC01", "title": "Vague adjective + undefined timing", "requirement_text": "The system should be fast when processing orders.", "expected_flags": "vague adjective (fast); no measurable threshold; missing EARS trigger keyword", "difficulty": "easy"},
+  {"id": "TC02", "title": "Vague verb + missing actor", "requirement_text": "Users should easily find their order status.", "expected_flags": "vague verb (find); vague adjective (easily); no defined UI/response mechanism", "difficulty": "easy"},
+  {"id": "TC03", "title": "Escape clause + vague adjective", "requirement_text": "The system should notify users appropriately when something changes.", "expected_flags": "escape clause (appropriately); vague noun (something); missing EARS WHEN/SHALL structure", "difficulty": "medium"},
+  {"id": "TC04", "title": "Tacit knowledge + escape clause", "requirement_text": "The system SHALL process orders using the standard workflow.", "expected_flags": "tacit knowledge (standard workflow refers to undefined external process)", "difficulty": "medium"},
+  {"id": "TC05", "title": "Passive voice + no actor", "requirement_text": "Order confirmations are sent after checkout is completed.", "expected_flags": "passive voice (are sent); missing explicit actor/trigger; no SHALL keyword", "difficulty": "medium"},
+  {"id": "TC06", "title": "Pronoun ambiguity", "requirement_text": "When a user submits an order, it should be processed and they should be told.", "expected_flags": "pronoun ambiguity (it, they); vague verb (processed); no measurable response", "difficulty": "medium"},
+  {"id": "TC07", "title": "Oblique symbol + multiple SHALLs", "requirement_text": "The system shall validate and/or reject orders and shall log all activity.", "expected_flags": "oblique symbol (and/or); EARS singularity violation (two SHALLs); ambiguous conditional logic", "difficulty": "hard"},
+  {"id": "TC08", "title": "Happy-path only, no error handling", "requirement_text": "WHEN a user places an order, THE SYSTEM SHALL confirm the order within 2 seconds.", "expected_flags": "happy-path-only detection (no IF-THEN unwanted-behavior requirement present in document)", "difficulty": "hard"},
+  {"id": "TC09", "title": "Well-formed EARS requirement (negative control)", "requirement_text": "IF payment fails, THEN THE SYSTEM SHALL notify the user within 5 seconds and log the failure reason.", "expected_flags": "none expected; valid Unwanted Behavior EARS pattern; single SHALL; clear trigger/response", "difficulty": "control"},
+  {"id": "TC10", "title": "Lowercase EARS keywords (grammar violation)", "requirement_text": "when a user cancels an order, the system shall refund the payment.", "expected_flags": "EARS casing violation (lowercase when/shall); otherwise valid structure", "difficulty": "easy"}
+]
+
+Confirm the file is saved, then proceed with Step 4: run the TC01-only smoke test across all 5 coaches, show me that output, and wait for my confirmation before running the full 10-test-case x 5-coach batch (50 evaluations).

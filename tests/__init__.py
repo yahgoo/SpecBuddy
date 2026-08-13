@@ -1,0 +1,2 @@
+"""SpecBuddy test package."""
+

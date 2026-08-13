@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpecBuddy — Option 2 Guided Gate (Demo Shell)</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3344;
+    --text: #e1e4ed;
+    --text-dim: #8b90a0;
+    --accent: #6c8cff;
+    --red: #ff4d6a;
+    --red-bg: rgba(255, 77, 106, 0.08);
+    --red-border: rgba(255, 77, 106, 0.25);
+    --green: #34d399;
+    --green-bg: rgba(52, 211, 153, 0.08);
+    --green-border: rgba(52, 211, 153, 0.25);
+    --yellow: #fbbf24;
+    --yellow-bg: rgba(251, 191, 36, 0.08);
+    --orange: #fb923c;
+    --font: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Demo Banner */
+  .demo-banner {
+    background: linear-gradient(90deg, rgba(108,140,255,0.15), rgba(251,191,36,0.10));
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--yellow);
+  }
+  .demo-banner span { opacity: 0.6; color: var(--text-dim); margin: 0 8px; }
+
+  /* Header */
+  .header {
+    padding: 32px 40px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header h1 .gate { color: var(--accent); }
+  .header p { color: var(--text-dim); margin-top: 4px; font-size: 14px; }
+
+  /* Stepper */
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .step:hover { background: var(--surface); }
+  .step.active { background: var(--surface2); }
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    color: var(--text-dim);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .step.active .step-num { border-color: var(--accent); color: #fff; background: var(--accent); }
+  .step.done .step-num { border-color: var(--green); color: #fff; background: var(--green); }
+  .step-label { font-size: 14px; font-weight: 500; color: var(--text-dim); transition: color 0.2s; }
+  .step.active .step-label { color: var(--text); }
+  .step.done .step-label { color: var(--green); }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    min-width: 24px;
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--green); }
+
+  /* Main content */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+  }
+  .panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+  .card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Import panel */
+  .import-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .import-zone:hover { border-color: var(--accent); background: rgba(108,140,255,0.04); }
+  .import-zone.loaded { border-color: var(--green); border-style: solid; background: var(--green-bg); }
+  .import-icon { font-size: 40px; margin-bottom: 12px; }
+  .import-zone p { color: var(--text-dim); }
+  .import-zone .filename {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: 8px;
+    display: inline-block;
+    background: rgba(108,140,255,0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+
+  /* Spec preview */
+  .spec-preview {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    color: var(--text-dim);
+    margin-top: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  /* Findings table */
+  .findings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .findings-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+  }
+  .findings-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(46,51,68,0.5);
+    vertical-align: top;
+  }
+  .findings-table tr:hover td { background: rgba(108,140,255,0.03); }
+  .findings-scroll { max-height: 480px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border); }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-defect { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge-clarification { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .badge-lexical { background: rgba(108,140,255,0.1); color: var(--accent); border: 1px solid rgba(108,140,255,0.25); }
+  .badge-syntactical { background: rgba(251,146,60,0.1); color: var(--orange); border: 1px solid rgba(251,146,60,0.25); }
+  .badge-tacit { background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.25); }
+  .badge-completeness { background: rgba(236,72,153,0.1); color: #ec4899; border: 1px solid rgba(236,72,153,0.25); }
+  .badge-referential { background: rgba(20,184,166,0.1); color: #14b8a6; border: 1px solid rgba(20,184,166,0.25); }
+
+  .line-ref {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-dim);
+  }
+
+  /* Verdict box */
+  .verdict-box {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .verdict-box.refused {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+  }
+  .verdict-box.certified {
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+  }
+  .verdict-icon { font-size: 48px; }
+  .verdict-info h3 {
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .verdict-box.refused .verdict-info h3 { color: var(--red); }
+  .verdict-box.certified .verdict-info h3 { color: var(--green); }
+  .verdict-info p { color: var(--text-dim); font-size: 14px; margin-top: 2px; }
+
+  /* Score bar */
+  .score-bar-wrap { margin-top: 8px; width: 200px; }
+  .score-bar-bg {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+  .score-bar-fill.zero { width: 0%; background: var(--red); }
+  .score-bar-fill.full { width: 100%; background: var(--green); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 130px;
+    flex: 1;
+  }
+  .stat-card .val { font-size: 28px; font-weight: 700; }
+  .stat-card .label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .stat-card.red .val { color: var(--red); }
+  .stat-card.yellow .val { color: var(--yellow); }
+  .stat-card.green .val { color: var(--green); }
+
+  /* Resolve panel */
+  .resolve-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: all 0.2s;
+  }
+  .resolve-item:hover { border-color: var(--accent); }
+  .resolve-item .ri-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .resolve-item .ri-body { flex: 1; }
+  .resolve-item .ri-before {
+    font-size: 13px;
+    color: var(--red);
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .resolve-item .ri-after {
+    font-size: 13px;
+    color: var(--green);
+  }
+  .resolve-item .ri-msg {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-style: italic;
+  }
+  .resolve-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 14px;
+    color: transparent;
+  }
+  .resolve-check.checked {
+    border-color: var(--green);
+    background: var(--green);
+    color: #fff;
+  }
+
+  /* Compare view */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .compare-col { }
+  .compare-col h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .compare-col.before h3 { color: var(--red); }
+  .compare-col.after h3 { color: var(--green); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #5a7ae6; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: var(--green); color: #000; }
+  .btn-success:hover { background: #2bc48e; transform: translateY(-1px); }
+  .btn-group { display: flex; gap: 12px; margin-top: 24px; }
+
+  /* Ready panel */
+  .ready-hero {
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .ready-hero .icon { font-size: 72px; margin-bottom: 16px; }
+  .ready-hero h2 { font-size: 28px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+  .ready-hero p { color: var(--text-dim); font-size: 16px; max-width: 500px; margin: 0 auto; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header, .main { padding-left: 16px; padding-right: 16px; }
+    .stepper { flex-wrap: wrap; gap: 4px; padding: 16px; }
+    .step { padding: 8px 10px; }
+    .step-label { font-size: 12px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .stats-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  &#9670; Demo Shell <span>|</span> SpecBuddy Option 2 — Guided Gate <span>|</span> Presentation Only — No Live Linter &#9670;
+</div>
+
+<!-- Header -->
+<div class="header">
+  <h1>Clarity<span class="gate">Gate</span></h1>
+  <p>Option 2 Guided Gate — Import → Review → Resolve → Ready</p>
+</div>
+
+<!-- Stepper -->
+<div class="stepper" id="stepper">
+  <div class="step active" data-step="0" onclick="goStep(0)">
+    <div class="step-num">1</div>
+    <div class="step-label">Import</div>
+  </div>
+  <div class="step-line" id="line-0"></div>
+  <div class="step" data-step="1" onclick="goStep(1)">
+    <div class="step-num">2</div>
+    <div class="step-label">Review</div>
+  </div>
+  <div class="step-line" id="line-1"></div>
+  <div class="step" data-step="2" onclick="goStep(2)">
+    <div class="step-num">3</div>
+    <div class="step-label">Resolve</div>
+  </div>
+  <div class="step-line" id="line-2"></div>
+  <div class="step" data-step="3" onclick="goStep(3)">
+    <div class="step-num">4</div>
+    <div class="step-label">Ready</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- STEP 0: Import -->
+  <div class="panel active" id="panel-0">
+    <div class="card">
+      <h2>Import Requirements Spec</h2>
+      <p style="color:var(--text-dim); margin-bottom: 20px;">Upload your requirements document to begin the SpecBuddy quality scan.</p>
+      <div class="import-zone" id="importZone" onclick="simulateImport()">
+        <div class="import-icon">&#128196;</div>
+        <p>Click to import your spec file</p>
+        <p style="font-size:12px; margin-top:4px;">Supports .md requirement documents</p>
+      </div>
+      <div id="importResult" style="display:none; margin-top: 20px;">
+        <h3>Imported File</h3>
+        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+          <span style="font-size:24px;">&#9989;</span>
+          <div>
+            <div class="filename" id="importedFilename" style="font-family:var(--mono); font-size:14px; color:var(--accent);"></div>
+            <div style="font-size:12px; color:var(--text-dim); margin-top:2px;" id="importedMeta"></div>
+          </div>
+        </div>
+        <div class="spec-preview" id="specPreview"></div>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnImportNext" style="display:none;" onclick="goStep(1)">Run Scan &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: Review -->
+  <div class="panel" id="panel-1">
+    <!-- Verdict -->
+    <div class="verdict-box refused" id="verdictBox">
+      <div class="verdict-icon">&#9940;</div>
+      <div class="verdict-info">
+        <h3 id="verdictTitle">REFUSED</h3>
+        <p id="verdictSub">Agent Readiness Score: <strong id="verdictScore">0/100</strong> — Rewrite Required</p>
+        <div class="score-bar-wrap">
+          <div class="score-bar-bg"><div class="score-bar-fill zero" id="scoreBar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="val" id="statReqs">6</div><div class="label">Requirements</div></div>
+      <div class="stat-card red"><div class="val" id="statFindings">23</div><div class="label">Findings</div></div>
+      <div class="stat-card red"><div class="val" id="statDefects">21</div><div class="label">Defects</div></div>
+      <div class="stat-card yellow"><div class="val" id="statClarif">2</div><div class="label">Clarifications</div></div>
+    </div>
+
+    <!-- Before/After Toggle -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2>Spec Comparison</h2>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="showCompare('before')" id="btnBefore" style="border-color:var(--red);color:var(--red);">&#9679; Before (Ambiguous)</button>
+          <button class="btn btn-outline" onclick="showCompare('after')" id="btnAfter">&#9679; After (Clean EARS)</button>
+        </div>
+      </div>
+      <div id="compareBefore">
+        <div class="spec-preview" style="border-color: var(--red-border);"># Order Notification Feature — Requirements
+
+## Functional Requirements
+
+- "The system should be fast when processing orders."
+- "Users should easily find their order status."
+- "The system should notify users appropriately when something changes."
+- "Admins can obviously override notifications if needed."
+- "The system must handle payment errors as appropriate."
+- "The system will provide symbol/sign tracking for shipments."</div>
+      </div>
+      <div id="compareAfter" style="display:none;">
+        <div class="spec-preview" style="border-color: var(--green-border);"># Order Notification Feature — Requirements
+
+## Functional Requirements
+
+- WHEN a customer submits an order, THE System SHALL display a confirmation message within 2 seconds.
+- WHILE a session is inactive for 30 minutes, THE System SHALL redirect the user to the login page.
+- IF notification delivery fails, THEN THE System SHALL retry delivery within 1 minute.</div>
+        <div class="verdict-box certified" style="margin-top:16px; margin-bottom:0;">
+          <div class="verdict-icon">&#9989;</div>
+          <div class="verdict-info">
+            <h3>CERTIFIED</h3>
+            <p>Agent Readiness Score: <strong>100/100</strong> — Coding-Agent Ready</p>
+            <div class="score-bar-wrap">
+              <div class="score-bar-bg"><div class="score-bar-fill full"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Findings Table -->
+    <div class="card">
+      <h2>Detailed Findings (23)</h2>
+      <div class="findings-scroll">
+        <table class="findings-table">
+          <thead>
+            <tr><th>Line</th><th>Check</th><th>Category</th><th>Type</th><th>Message</th><th>Suggestion</th></tr>
+          </thead>
+          <tbody id="findingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(0)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goStep(2)">Begin Resolving &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Resolve -->
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <h2>Resolve Findings</h2>
+      <p style="color:var(--text-dim); margin-bottom:20px;">Review each suggested fix below. Click the circle to mark it as resolved. In the full product, each fix would be applied directly to your spec.</p>
+      <div id="resolveItems"></div>
+      <div style="margin-top: 16px; font-size: 14px; color: var(--text-dim);">
+        Resolved: <strong id="resolvedCount" style="color:var(--green);">0</strong> / <span id="resolvedTotal">8</span>
+      </div>
+    </div>
+
+    <!-- Clarification Queue -->
+    <div class="card">
+      <h2>Clarification Queue</h2>
+      <p style="color:var(--text-dim); margin-bottom:16px;">These items require human judgment — the linter cannot auto-resolve them.</p>
+      <div class="resolve-item" style="border-color: rgba(251,191,36,0.25);">
+        <div class="ri-line">L8</div>
+        <div class="ri-body">
+          <div style="font-size:13px; color:var(--yellow);">Phrase 'obviously' suggests unstated domain knowledge.</div>
+          <div class="ri-msg">A) Keep as-is and accept AI drift risk; B) Make the assumed rule explicit as an observable requirement.</div>
+        </div>
+      </div>
+      <div class="resolve-item" style="border-color: rgba(251,191,36,0.25);">
+        <div class="ri-line">L5</div>
+        <div class="ri-body">
+          <div style="font-size:13px; color:var(--yellow);">Feature description contains nominal behavior but no Unwanted Behavior IF-THEN requirement.</div>
+          <div class="ri-msg">A) Keep as-is and accept AI drift risk; B) Add an IF &lt;failure condition&gt;, THEN THE System SHALL &lt;recovery action&gt; requirement.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(1)">&#8592; Back</button>
+      <button class="btn btn-success" onclick="goStep(3)">Re-Scan &amp; Certify &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Ready -->
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="ready-hero">
+        <div class="icon">&#9989;</div>
+        <h2>SPEC CERTIFIED</h2>
+        <p>Your requirements document has passed all SpecBuddy quality checks. It is ready for handoff to downstream teams, AI agents, or implementation.</p>
+      </div>
+    </div>
+
+    <div class="verdict-box certified">
+      <div class="verdict-icon">&#9989;</div>
+      <div class="verdict-info">
+        <h3>CERTIFIED</h3>
+        <p>Agent Readiness Score: <strong>100/100</strong> — Coding-Agent Ready &nbsp;|&nbsp; Exit Code: 0</p>
+        <div class="score-bar-wrap">
+          <div class="score-bar-bg"><div class="score-bar-fill full"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green"><div class="val">3</div><div class="label">Requirements</div></div>
+      <div class="stat-card green"><div class="val">0</div><div class="label">Findings</div></div>
+      <div class="stat-card green"><div class="val">0</div><div class="label">Defects</div></div>
+      <div class="stat-card green"><div class="val">0</div><div class="label">Clarifications</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Certified Spec</h2>
+      <div class="spec-preview" style="border-color: var(--green-border);"># Order Notification Feature — Requirements
+
+## Functional Requirements
+
+- WHEN a customer submits an order, THE System SHALL display a confirmation message within 2 seconds.
+- WHILE a session is inactive for 30 minutes, THE System SHALL redirect the user to the login page.
+- IF notification delivery fails, THEN THE System SHALL retry delivery within 1 minute.</div>
+    </div>
+
+    <div class="card">
+      <h2>CLI Output</h2>
+      <div class="spec-preview" style="color: var(--green);">SpecBuddy scan complete
+Requirements scanned: 3
+Findings: 0
+Defects: 0
+Clarifications: 0
+Agent Readiness Score: 100/100 (Coding-Agent Ready)
+Verdict: CERTIFIED
+Report: specbuddy-report.md</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(0)">&#8592; Start Over</button>
+      <button class="btn btn-primary" onclick="alert('In the full product, this would export the certified spec for handoff.')">Export Certified Spec</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Hardcoded findings data from ambiguous-requirements.md scan ──
+const findings = [
+  { line: 5, check: "AMB-VAGUE-ADJ", category: "lexical", type: "unverifiable_adjective", message: "Unquantified adjective 'fast' is unverifiable.", suggestion: "Replace 'fast' with a threshold, e.g. 'within 2 seconds for 95% of requests'." },
+  { line: 5, check: "EARS-IMPERATIVE", category: "syntactical", type: "non_mandatory_imperative", message: "'should' weakens the requirement; mandatory requirements must use SHALL.", suggestion: "Rewrite the statement with 'THE System SHALL ...' and an observable outcome." },
+  { line: 5, check: "EARS-KEYWORD", category: "syntactical", type: "lowercase_ears_keyword", message: "EARS keywords must be UPPERCASE. Required keywords: WHEN, WHILE, WHERE, IF, THEN, SHALL.", suggestion: "Rewrite lowercase keywords as: WHEN, WHILE, WHERE, IF, THEN, SHALL." },
+  { line: 6, check: "EARS-IMPERATIVE", category: "syntactical", type: "non_mandatory_imperative", message: "'should' weakens the requirement; mandatory requirements must use SHALL.", suggestion: "Rewrite the statement with 'THE System SHALL ...' and an observable outcome." },
+  { line: 6, check: "AMB-ADVERB", category: "lexical", type: "unquantified_adverb", message: "Adverb 'easily' should be replaced with a measurable criterion.", suggestion: "Replace the adverb with an observable threshold or acceptance test." },
+  { line: 6, check: "EARS-MISSING", category: "syntactical", type: "missing_ears_keyword", message: "Requirement has no EARS keyword and is not testable enough for handoff.", suggestion: "Rewrite using one EARS pattern, e.g. 'WHEN <trigger>, THE System SHALL <response>'." },
+  { line: 7, check: "EARS-IMPERATIVE", category: "syntactical", type: "non_mandatory_imperative", message: "'should' weakens the requirement; mandatory requirements must use SHALL.", suggestion: "Rewrite the statement with 'THE System SHALL ...' and an observable outcome." },
+  { line: 7, check: "AMB-ADVERB", category: "lexical", type: "unquantified_adverb", message: "Adverb 'appropriately' should be replaced with a measurable criterion.", suggestion: "Replace the adverb with an observable threshold or acceptance test." },
+  { line: 7, check: "EARS-KEYWORD", category: "syntactical", type: "lowercase_ears_keyword", message: "EARS keywords must be UPPERCASE. Required keywords: WHEN, WHILE, WHERE, IF, THEN, SHALL.", suggestion: "Rewrite lowercase keywords as: WHEN, WHILE, WHERE, IF, THEN, SHALL." },
+  { line: 8, check: "AMB-ADVERB", category: "lexical", type: "unquantified_adverb", message: "Adverb 'obviously' should be replaced with a measurable criterion.", suggestion: "Replace the adverb with an observable threshold or acceptance test." },
+  { line: 8, check: "AMB-ESCAPE", category: "lexical", type: "escape_clause", message: "Escape clause 'if needed' permits non-conformance.", suggestion: "Replace the escape clause with a specific condition and expected behavior." },
+  { line: 8, check: "EARS-KEYWORD", category: "syntactical", type: "lowercase_ears_keyword", message: "EARS keywords must be UPPERCASE.", suggestion: "Rewrite lowercase keywords as: WHEN, WHILE, WHERE, IF, THEN, SHALL." },
+  { line: 8, check: "TACIT-UNREC", category: "tacit", type: "tacit_knowledge", message: "Phrase 'obviously' suggests unstated domain knowledge.", suggestion: "Make the assumed rule explicit as an observable requirement." },
+  { line: 9, check: "AMB-VAGUE-VERB", category: "lexical", type: "vague_verb", message: "Vague verb 'handle' has no observable output.", suggestion: "Replace it with a measurable behavior, e.g. 'THE System SHALL display the order status within 2 seconds.'" },
+  { line: 9, check: "AMB-VAGUE-ADJ", category: "lexical", type: "unverifiable_adjective", message: "Unquantified adjective 'appropriate' is unverifiable.", suggestion: "Replace the subjective adjective with an observable metric or threshold." },
+  { line: 9, check: "EARS-IMPERATIVE", category: "syntactical", type: "non_mandatory_imperative", message: "'must' weakens the requirement; mandatory requirements must use SHALL.", suggestion: "Rewrite the statement with 'THE System SHALL ...' and an observable outcome." },
+  { line: 9, check: "AMB-ESCAPE", category: "lexical", type: "escape_clause", message: "Escape clause 'as appropriate' permits non-conformance.", suggestion: "Replace the escape clause with a specific condition and expected behavior." },
+  { line: 9, check: "EARS-MISSING", category: "syntactical", type: "missing_ears_keyword", message: "Requirement has no EARS keyword and is not testable enough for handoff.", suggestion: "Rewrite using one EARS pattern, e.g. 'WHEN <trigger>, THE System SHALL <response>'." },
+  { line: 10, check: "AMB-VAGUE-VERB", category: "lexical", type: "vague_verb", message: "Vague verb 'provide' has no observable output.", suggestion: "Replace it with a measurable behavior, e.g. 'THE System SHALL display the order status within 2 seconds.'" },
+  { line: 10, check: "EARS-IMPERATIVE", category: "syntactical", type: "non_mandatory_imperative", message: "'will' weakens the requirement; mandatory requirements must use SHALL.", suggestion: "Rewrite the statement with 'THE System SHALL ...' and an observable outcome." },
+  { line: 10, check: "AMB-OBLIQUE", category: "referential", type: "oblique_symbol", message: "A slash combines alternatives or synonyms and creates referential ambiguity.", suggestion: "Choose one term or split the alternatives into separate requirements." },
+  { line: 10, check: "EARS-MISSING", category: "syntactical", type: "missing_ears_keyword", message: "Requirement has no EARS keyword and is not testable enough for handoff.", suggestion: "Rewrite using one EARS pattern, e.g. 'WHEN <trigger>, THE System SHALL <response>'." },
+  { line: 5, check: "COMP-HAPPY-PATH", category: "completeness", type: "missing_unwanted_behavior", message: "Feature description contains nominal behavior but no Unwanted Behavior IF-THEN requirement.", suggestion: "Add an IF <failure condition>, THEN THE System SHALL <recovery action> requirement." }
+];
+
+// ── Resolve items (grouped representative fixes) ──
+const resolveItems = [
+  { line: 5, before: '"The system should be fast when processing orders."', after: 'WHEN a customer submits an order, THE System SHALL display a confirmation message within 2 seconds.', msg: "Replaced vague adjective 'fast' with measurable threshold; added EARS pattern." },
+  { line: 6, before: '"Users should easily find their order status."', after: 'WHEN a user navigates to Order History, THE System SHALL display all active orders within 1 second.', msg: "Replaced 'easily' with observable acceptance test." },
+  { line: 7, before: '"The system should notify users appropriately when something changes."', after: 'WHEN an order status changes, THE System SHALL send a push notification within 30 seconds.', msg: "Replaced 'appropriately' and 'something' with specific trigger and action." },
+  { line: 8, before: '"Admins can obviously override notifications if needed."', after: 'WHEN an admin selects Override, THE System SHALL suppress notifications for the selected order within 5 seconds.', msg: "Removed tacit 'obviously' and escape clause 'if needed'." },
+  { line: 9, before: '"The system must handle payment errors as appropriate."', after: 'IF payment processing fails, THEN THE System SHALL display the error code and retry within 10 seconds.', msg: "Replaced vague verb 'handle' and escape clause with IF-THEN pattern." },
+  { line: 10, before: '"The system will provide symbol/sign tracking for shipments."', after: 'WHEN a shipment is dispatched, THE System SHALL display the carrier tracking number on the order detail page.', msg: "Resolved oblique symbol 'symbol/sign'; replaced vague verb 'provide'." },
+  { line: 5, before: '(missing) No error-path requirement for order submission', after: 'IF order submission fails, THEN THE System SHALL display the validation error within 1 second.', msg: "Added Unwanted Behavior IF-THEN for completeness." },
+  { line: 7, before: '(missing) No retry failure path for notifications', after: 'IF notification delivery fails, THEN THE System SHALL retry delivery within 1 minute.', msg: "Added error recovery requirement." }
+];
+
+// ── Category badge class map ──
+const catClass = { lexical: 'badge-lexical', syntactical: 'badge-syntactical', tacit: 'badge-tacit', completeness: 'badge-completeness', referential: 'badge-referential' };
+
+// ── Render findings table ──
+function renderFindings() {
+  const tbody = document.getElementById('findingsBody');
+  tbody.innerHTML = findings.map(f => `
+    <tr>
+      <td><span class="line-ref">L${f.line}</span></td>
+      <td style="font-family:var(--mono);font-size:12px;white-space:nowrap;">${f.check}</td>
+      <td><span class="badge ${catClass[f.category] || ''}">${f.category}</span></td>
+      <td style="font-size:12px;">${f.type}</td>
+      <td style="font-size:12px;max-width:280px;">${f.message}</td>
+      <td style="font-size:12px;max-width:280px;color:var(--text-dim);">${f.suggestion}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Render resolve items ──
+let resolvedSet = new Set();
+function renderResolve() {
+  const container = document.getElementById('resolveItems');
+  container.innerHTML = resolveItems.map((r, i) => `
+    <div class="resolve-item" id="resolve-${i}">
+      <div class="resolve-check" id="check-${i}" onclick="toggleResolve(${i})">&#10003;</div>
+      <div class="ri-line">L${r.line}</div>
+      <div class="ri-body">
+        <div class="ri-before">${r.before}</div>
+        <div class="ri-after">${r.after}</div>
+        <div class="ri-msg">${r.msg}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('resolvedTotal').textContent = resolveItems.length;
+}
+
+function toggleResolve(i) {
+  const el = document.getElementById('check-' + i);
+  if (resolvedSet.has(i)) {
+    resolvedSet.delete(i);
+    el.classList.remove('checked');
+  } else {
+    resolvedSet.add(i);
+    el.classList.add('checked');
+  }
+  document.getElementById('resolvedCount').textContent = resolvedSet.size;
+}
+
+// ── Stepper navigation ──
+let currentStep = 0;
+function goStep(n) {
+  currentStep = n;
+  // Panels
+  document.querySelectorAll('.panel').forEach((p, i) => {
+    p.classList.toggle('active', i === n);
+  });
+  // Steps
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i === n) s.classList.add('active');
+    else if (i < n) s.classList.add('done');
+  });
+  // Lines
+  for (let i = 0; i < 3; i++) {
+    document.getElementById('line-' + i).classList.toggle('done', i < n);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Import simulation ──
+let imported = false;
+function simulateImport() {
+  if (imported) return;
+  imported = true;
+  const zone = document.getElementById('importZone');
+  zone.classList.add('loaded');
+  zone.innerHTML = '<div class="import-icon">&#9989;</div><p>File imported successfully</p>';
+  document.getElementById('importResult').style.display = 'block';
+  document.getElementById('importedFilename').textContent = 'data/samples/ambiguous-requirements.md';
+  document.getElementById('importedMeta').textContent = '6 requirement lines detected — Markdown format';
+  document.getElementById('specPreview').textContent = `# Order Notification Feature — Requirements
+
+## Functional Requirements
+
+- "The system should be fast when processing orders."
+- "Users should easily find their order status."
+- "The system should notify users appropriately when something changes."
+- "Admins can obviously override notifications if needed."
+- "The system must handle payment errors as appropriate."
+- "The system will provide symbol/sign tracking for shipments."`;
+  document.getElementById('btnImportNext').style.display = 'inline-flex';
+}
+
+// ── Compare toggle ──
+function showCompare(which) {
+  document.getElementById('compareBefore').style.display = which === 'before' ? 'block' : 'none';
+  document.getElementById('compareAfter').style.display = which === 'after' ? 'block' : 'none';
+  const bb = document.getElementById('btnBefore');
+  const ba = document.getElementById('btnAfter');
+  if (which === 'before') {
+    bb.style.borderColor = 'var(--red)'; bb.style.color = 'var(--red)';
+    ba.style.borderColor = 'var(--border)'; ba.style.color = 'var(--text)';
+  } else {
+    ba.style.borderColor = 'var(--green)'; ba.style.color = 'var(--green)';
+    bb.style.borderColor = 'var(--border)'; bb.style.color = 'var(--text)';
+  }
+}
+
+// ── Init ──
+renderFindings();
+renderResolve();
+</script>
+</body>
+</html>
