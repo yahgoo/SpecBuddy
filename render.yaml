@@ -2,14 +2,12 @@ services:
   - type: web
     name: specbuddy-backend
     env: python
+    plan: free
     buildCommand: "pip install -r requirements-backend.txt"
     startCommand: "python3 -m uvicorn backend.main:create_app --factory --host 0.0.0.0 --port $PORT"
-    disk:
-      name: specbuddy-data
-      mountPath: /data
-      sizeGB: 1
+    healthCheckPath: /docs
     envVars:
       - key: DATABASE_PATH
-        value: /data/specbuddy.db
+        value: specbuddy.db
       - key: CORS_ORIGINS
         sync: false
