@@ -13,12 +13,24 @@ import {
 import { deriveMissions, missionProgress } from './gamification';
 import EvidencePanel from './EvidencePanel';
 
-const SAMPLE_SPEC = `# Login Requirements
+const DEMO_SME_BRIEF = `# Ah Tan Nasi Lemak Online Ordering Brief
 
-The system shall authenticate users via email and password.
-The system should support password reset.
-The system may log failed attempts.
-The system shall lock accounts after 5 failed attempts within 10 minutes.
+Draft from owner after WhatsApp discussion. This is the first pass for an ordering site for our stall at a heartland coffee shop near Tampines.
+
+## Requirements
+
+1. The system should let customers browse nasi lemak sets, drinks, add-ons, and SGD prices quickly.
+2. Customers can choose pickup or delivery and it should be user-friendly for aunties and office workers.
+3. THE System SHALL support PayNow QR payment fast.
+4. If PayNow payment fails, the system should retry quickly.
+5. Payment receipts are sent to the customer after payment is verified.
+6. THE System SHALL support English/Malay notices where possible.
+7. THE System SHALL handle PDPA consent appropriately.
+8. THE System SHALL delete old customer data after a reasonable period.
+9. THE System SHALL use a 3km/5km delivery radius depending on rain and rider availability.
+10. THE System SHALL cancel unpaid orders.
+11. THE System SHALL notify customer/admin when the stall accepts the order.
+12. THE System SHALL handle chilli requests as usual.
 `;
 
 type Severity = 'defect' | 'clarification' | 'info';
@@ -51,8 +63,8 @@ interface ClarifyPanelState {
 // ---------------------------------------------------------------------------
 
 export default function App() {
-  const [filename, setFilename] = useState('requirements.md');
-  const [rawText, setRawText] = useState('');
+  const [filename, setFilename] = useState('sme-brief.md');
+  const [rawText, setRawText] = useState(DEMO_SME_BRIEF);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResponse | null>(null);
@@ -421,7 +433,7 @@ export default function App() {
             className="textarea"
             value={rawText}
             onChange={(e) => setRawText(e.target.value)}
-            placeholder={SAMPLE_SPEC}
+            placeholder={DEMO_SME_BRIEF}
             rows={14}
           />
           <button
