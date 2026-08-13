@@ -24,6 +24,7 @@ dist/
 frontend/dist/
 build/
 *.log
+.vercel/
 
 # Local env
 .env
