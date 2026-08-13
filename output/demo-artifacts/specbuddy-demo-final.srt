@@ -1,0 +1,282 @@
+1
+00:00:00,000 --> 00:00:01,687
+"Just add PayNow."
+
+2
+00:00:01,687 --> 00:00:05,930
+That was a real hawker-stall
+requirements brief.
+
+3
+00:00:05,930 --> 00:00:07,704
+A coding agent will build it
+
+4
+00:00:07,704 --> 00:00:10,453
+and guess what happens
+when payment fails.
+
+5
+00:00:12,000 --> 00:00:16,660
+SpecBuddy is the quality gate
+before your coding agent.
+
+6
+00:00:16,660 --> 00:00:17,733
+It scores.
+
+7
+00:00:17,733 --> 00:00:19,626
+It refuses ambiguity.
+
+8
+00:00:19,626 --> 00:00:21,706
+Only the deterministic linter
+
+9
+00:00:21,706 --> 00:00:24,672
+decides when a spec is ready.
+
+10
+00:00:26,000 --> 00:00:28,110
+Four layers, one invariant.
+
+11
+00:00:28,110 --> 00:00:31,111
+A React frontend for review
+and clarification.
+
+12
+00:00:31,111 --> 00:00:35,585
+A FastAPI and SQLite backend
+for transactional rewrites.
+
+13
+00:00:35,585 --> 00:00:39,962
+A deterministic Python linter
+enforces EARS and scores.
+
+14
+00:00:39,962 --> 00:00:42,110
+Only the linter can certify.
+
+15
+00:00:42,110 --> 00:00:44,443
+The AI layer only proposes:
+
+16
+00:00:44,443 --> 00:00:48,333
+exactly two mutually exclusive
+rewrites, never a verdict.
+
+17
+00:00:48,333 --> 00:00:52,355
+That separation is
+the core architecture.
+
+18
+00:00:52,355 --> 00:00:56,485
+People review tradeoffs;
+AI drafts bounded options.
+
+19
+00:00:56,485 --> 00:00:58,363
+SpecBuddy gives
+the final yes or no.
+
+20
+00:01:00,000 --> 00:01:05,077
+SpecBuddy catches weak requirements
+before a coding agent starts building.
+
+21
+00:01:08,000 --> 00:01:14,293
+Here is a real heartland brief,
+written like clients really write.
+
+22
+00:01:18,000 --> 00:01:23,277
+SpecBuddy refuses it immediately:
+score zero, twenty-two findings.
+
+23
+00:01:23,277 --> 00:01:27,024
+It flags PayNow retry gaps
+and missing PDPA consent.
+
+24
+00:01:30,000 --> 00:01:34,885
+The Mission Board turns issues
+into a visible checklist.
+
+25
+00:01:42,000 --> 00:01:47,461
+Each finding has an exact line,
+plus a fix or question.
+
+26
+00:01:55,000 --> 00:01:59,949
+Apply one fix and one answer;
+the findings count drops.
+
+27
+00:02:08,000 --> 00:02:13,163
+Accepted rewrites stay visible
+and reversible.
+
+28
+00:02:18,000 --> 00:02:22,267
+Resolve the rest, and the spec
+reaches CERTIFIED state.
+
+29
+00:02:30,000 --> 00:02:34,949
+One hundred out of one hundred:
+CERTIFIED for agent handoff.
+
+30
+00:02:40,000 --> 00:02:42,398
+This is not marketing.
+It is measured.
+
+31
+00:02:42,398 --> 00:02:45,425
+Twenty-one adversarial
+benchmark cases.
+
+32
+00:02:45,425 --> 00:02:48,240
+Ten hostile briefs tested.
+Zero crashes.
+
+33
+00:02:48,240 --> 00:02:51,373
+False positives dropped
+from sixteen down to one.
+
+34
+00:02:51,373 --> 00:02:52,587
+Zero regressions.
+
+35
+00:02:54,000 --> 00:02:57,060
+We built SpecBuddy using
+a spec-driven workflow.
+
+36
+00:02:57,060 --> 00:03:02,340
+Every new feature started
+as a requirements document.
+
+37
+00:03:02,340 --> 00:03:05,108
+We ran each one through
+SpecBuddy until it certified.
+
+38
+00:03:05,108 --> 00:03:09,927
+The Clarify interaction
+came from a certified spec.
+
+39
+00:03:09,927 --> 00:03:13,934
+Tencent CodeBuddy implemented
+the reserved frontend slice.
+
+40
+00:03:13,934 --> 00:03:17,109
+The rule was explicit:
+AI proposes.
+
+41
+00:03:17,109 --> 00:03:22,817
+Only the deterministic linter
+certifies.
+
+42
+00:03:22,817 --> 00:03:27,123
+The practical lesson:
+make the handoff measurable.
+
+43
+00:03:27,123 --> 00:03:31,549
+Review means changed files,
+tests, and the gate.
+
+44
+00:03:31,549 --> 00:03:35,728
+Accepted rewrites stay visible
+for human review.
+
+45
+00:03:37,000 --> 00:03:39,299
+Built for Singapore agencies
+
+46
+00:03:39,299 --> 00:03:42,412
+and SMEs commissioning
+agent-built software.
+
+47
+00:03:42,412 --> 00:03:45,886
+Also for BAs and PMs
+writing their briefs.
+
+48
+00:03:45,886 --> 00:03:48,598
+As a per-seat gate
+with CI integration,
+
+49
+00:03:48,598 --> 00:03:53,123
+deterministic verdicts are
+what a CI pipeline can trust.
+
+50
+00:03:53,123 --> 00:03:55,448
+The buyer does not need
+another chatbot.
+
+51
+00:03:55,448 --> 00:03:57,907
+They need an auditable
+checkpoint before build.
+
+52
+00:03:59,000 --> 00:03:59,904
+Next:
+
+53
+00:03:59,904 --> 00:04:02,761
+specs directly from docs
+and meeting notes,
+
+54
+00:04:02,761 --> 00:04:04,433
+a CI gate mode,
+
+55
+00:04:04,433 --> 00:04:08,350
+expanded rule packs for
+PDPA and payments.
+
+56
+00:04:08,350 --> 00:04:11,928
+SpecBuddy moves into
+daily delivery.
+
+57
+00:04:13,000 --> 00:04:14,523
+Same coding agent.
+
+58
+00:04:14,523 --> 00:04:15,631
+Clearer specs in.
+
+59
+00:04:15,631 --> 00:04:16,951
+Better software out.
+
+60
+00:04:16,951 --> 00:04:17,779
+SpecBuddy.

@@ -1,0 +1,13 @@
+0.5s	"Just add PayNow."
+5.95s	A coding agent will build it
+17s	It scores.
+30.5s	A React frontend for review / and clarification.
+36s	A deterministic Python linter / enforces EARS and scores.
+83.5s	It flags PayNow retry gaps / and missing PDPA consent.
+162.5s	Twenty-one adversarial / benchmark cases.
+185.5s	The Clarify interaction / came from a certified spec.
+190.2s	Tencent CodeBuddy implemented / the reserved frontend slice.
+197.5s	Only the deterministic linter / certifies.
+219.5s	and SMEs commissioning / agent-built software.
+244.8s	expanded rule packs for / PDPA and payments.
+254.7s	Clearer specs in.
